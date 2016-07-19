@@ -1,7 +1,7 @@
 var rutokenweb = (function (my) {
     var loadCallbacks = [];
     var pluginMimeType = "application/x-rutoken";
-    var extension = window["boabkkhbickbpleplbghkjpcoebckgai"];
+    var extension = getExtension();
 
     function isFunction (obj) {
         return !!(obj && obj.call && obj.apply);
@@ -21,6 +21,28 @@ var rutokenweb = (function (my) {
         return function () {
             return promise;
         };
+    }
+
+    function getChromeExtensionId() {
+        return "boabkkhbickbpleplbghkjpcoebckgai";
+    }
+
+    function getOperaExtensionId() {
+        return "hjljonpcnmgmijenacgdebaphhcjcien";
+    }
+
+    function getExtension() {
+        if (window[getChromeExtensionId()]) {
+            return window[getChromeExtensionId()];
+        } else {
+            return window[getOperaExtensionId()];
+        }
+    }
+
+    function installOperaExtension () {
+        return new Promise(function (resolve, reject) {
+            window.opr.addons.installExtension(getOperaExtensionId(), resolve, reject);
+        });
     }
 
     function initialize () {
@@ -53,6 +75,7 @@ var rutokenweb = (function (my) {
         my.ready = Promise.resolve(true);
         my.isExtensionInstalled = returnPromise(Promise.resolve(false));
         my.isPluginInstalled = returnPromise(Promise.resolve(false));
+        my.installExtension = installOperaExtension;
     }
 
     function loadPlugin () {
